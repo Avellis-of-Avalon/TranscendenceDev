@@ -10,6 +10,10 @@ This repo contains the source code for building the Transcendence.exe client,
 which is used to run any Transcendence adventure, including **Stars of the Pilgrim**
 from the **Domina & Oracus** saga.
 
+For the openworld sandbox adventure **Chronicles of the Stars**, a licensed 
+fork by Exadragon Entertainment, see the
+[Chronicles Github Repo](https://github.com/Exadragon-Entertainment/Chronicles).
+
 Note that there are several other repositories that are relevant to this
 project but are not necessary for building it from scratch.
 
