@@ -288,4 +288,4 @@ Kernel::CString strToXMLText (const Kernel::CString &sString, bool bInBody = fal
 Kernel::CString strTrimWhitespace (const Kernel::CString &sString, bool bLeading = true, bool bTrailing = true);
 Kernel::CString strWord (const Kernel::CString &sString, int iWordPos);
 
-
+inline Kernel::CString strHexFromUNID(DWORD dwUNID) { return strCat(CONSTLIT("0x"), strToUpper(strPatternSubst(CONSTLIT("%x"), dwUNID))); }
