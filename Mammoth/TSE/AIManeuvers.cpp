@@ -1813,7 +1813,10 @@ void CAIBehaviorCtx::ImplementFireSingleWeaponOnTarget (CShip* pShip,
 		bool bBestWeaponDamaged = false;
 
 		if (m_iBestWeapon != devNone)
-			bBestWeaponDamaged = pShip->GetDevice(m_iBestWeapon)->IsDamaged();
+			{
+			CInstalledDevice* pBestWeapon = pShip->GetNamedDevice(m_iBestWeapon);
+			bBestWeaponDamaged = pBestWeapon && pBestWeapon->IsDamaged();
+			}
 
 		if (m_iBestWeapon == devNone || (m_fHasSecondaryWeapons && bBestWeaponDamaged))
 			{
