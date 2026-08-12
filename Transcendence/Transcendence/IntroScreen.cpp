@@ -762,13 +762,16 @@ void CTranscendenceWnd::CreateShipDescAnimation (CShip *pShip, IAnimatron **retp
 
 	//	Show the ship class
 
-	CString sClassName = strToLower(pShip->GetNounPhrase());
+	CShipClass* pShipClass = pShip->GetClass();
+	CString sClassName = strToLower(pShip->GetNounPhrase(nounGeneric));
+	CString sObjName = strToLower(pShip->GetNounPhrase());
+	CString sDisplayName = strStartsWith(sClassName, "(") ? sObjName : sClassName;
 	int cyClassName;
 	int cxClassName = m_Fonts.SubTitle.MeasureText(sClassName, &cyClassName);
 	int cySectionSpacing = cyClassName / 6;
 
 	IAnimatron *pText;
-	CAniText::Create(sClassName,
+	CAniText::Create(sDisplayName,
 			CVector((Metric)x, (Metric)y),
 			&m_Fonts.SubTitle,
 			CG16bitFont::AlignCenter,
@@ -779,6 +782,94 @@ void CTranscendenceWnd::CreateShipDescAnimation (CShip *pShip, IAnimatron **retp
 
 	y += cyClassName + cySectionSpacing;
 	iDelay += iInterLineDelay * 3;
+
+	//	Debug info
+
+	bool bInDebug = g_pUniverse->InDebugMode();
+	if (bInDebug)
+		{
+		//	UNID Label
+
+		CString sUNID = strHexFromUNID(pShipClass->GetUNID());
+		CAniText::Create(CONSTLIT("UNID:"),
+			CVector((Metric)x - cyClassName / 4, (Metric)(y + m_Fonts.Medium.GetAscent() - m_Fonts.Small.GetAscent())),
+			&m_Fonts.Small,
+			CG16bitFont::AlignRight,
+			m_Fonts.rgbLightTitleColor,
+			&pText);
+		pText->AnimateLinearFade(iDuration - iDelay, 15, 30);
+		pSeq->AddTrack(pText, iDelay);
+
+		CAniText::Create(sUNID,
+			CVector((Metric)x + cyClassName / 4, (Metric)y),
+			&m_Fonts.Medium,
+			0,
+			m_Fonts.rgbTitleColor,
+			&pText);
+		pText->AnimateLinearFade(iDuration - iDelay, 15, 30);
+		pSeq->AddTrack(pText, iDelay);
+
+		y += m_Fonts.Medium.GetHeight();
+		iDelay += iInterLineDelay;
+		y += cySectionSpacing;
+
+		//	Operator Label
+
+		CSovereign* pDefaultSov = pShipClass->GetDefaultSovereign();
+		if (!pDefaultSov)
+			pDefaultSov = g_pUniverse->FindSovereign(UNID_NEUTRAL_SOVEREIGN);
+		CString sDefaultSov = pDefaultSov->GetNounPhrase();
+		sDefaultSov = sDefaultSov.GetLength() ? sDefaultSov : strPatternSubst(CONSTLIT("(UNID: %x)"), pDefaultSov->GetUNID());
+		
+		CAniText::Create(CONSTLIT("OPERATOR:"),
+			CVector((Metric)x - cyClassName / 4, (Metric)(y + m_Fonts.Medium.GetAscent() - m_Fonts.Small.GetAscent())),
+			&m_Fonts.Small,
+			CG16bitFont::AlignRight,
+			m_Fonts.rgbLightTitleColor,
+			&pText);
+		pText->AnimateLinearFade(iDuration - iDelay, 15, 30);
+		pSeq->AddTrack(pText, iDelay);
+
+		CAniText::Create(sDefaultSov,
+			CVector((Metric)x + cyClassName / 4, (Metric)y),
+			&m_Fonts.Medium,
+			0,
+			m_Fonts.rgbTitleColor,
+			&pText);
+		pText->AnimateLinearFade(iDuration - iDelay, 15, 30);
+		pSeq->AddTrack(pText, iDelay);
+
+		y += m_Fonts.Medium.GetHeight();
+		iDelay += iInterLineDelay;
+		y += cySectionSpacing;
+
+		//	Manufacturer Label
+
+		CString sManufacturer = strToLower(pShipClass->GetManufacturerName());
+		sManufacturer = sManufacturer.GetLength() ? sManufacturer : CONSTLIT("(unspecified)");
+
+		CAniText::Create(CONSTLIT("MANUFACTURER:"),
+			CVector((Metric)x - cyClassName / 4, (Metric)(y + m_Fonts.Medium.GetAscent() - m_Fonts.Small.GetAscent())),
+			&m_Fonts.Small,
+			CG16bitFont::AlignRight,
+			m_Fonts.rgbLightTitleColor,
+			&pText);
+		pText->AnimateLinearFade(iDuration - iDelay, 15, 30);
+		pSeq->AddTrack(pText, iDelay);
+
+		CAniText::Create(sManufacturer,
+			CVector((Metric)x + cyClassName / 4, (Metric)y),
+			&m_Fonts.Medium,
+			0,
+			m_Fonts.rgbTitleColor,
+			&pText);
+		pText->AnimateLinearFade(iDuration - iDelay, 15, 30);
+		pSeq->AddTrack(pText, iDelay);
+
+		y += m_Fonts.Medium.GetHeight();
+		iDelay += iInterLineDelay;
+		y += cySectionSpacing;
+		}
 
 	//	Weapons label
 
